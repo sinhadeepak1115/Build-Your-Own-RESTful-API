@@ -26,11 +26,41 @@ const article1 = new Article({
     content:"Hi Nigga"
 })
 
-app.get("/articles", function(req, res){
-    Article.find(function(err, foundArticles){
-        res.send(foundArticles);
+app.route('/articles')    
+    .get(function(req, res){
+        Article.find(function(err, foundArticles){
+            if (!err){
+            res.send(foundArticles);
+            }else{
+                res.send(err);
+                console.log(err);
+            }
+        });
+    })
+    
+    .post(function(req, res){
+        const newArticle = new Article({
+            title: req.body.title,
+            content: req.body.content
+        })
+        newArticle.save(function(err){
+            if (!err){
+                res.send("Sucessfully added a new article.");
+            }else{
+                res.send (err)
+            }
+        }); 
+    })
+
+    .delete(function(req, res){
+        Article.deleteMany(function(err){
+            if(!err){
+                res.send("Sucessfully deleted all articles.");
+            }else{
+                res.send(err); 
+            }
+        })
     });
-});
 
 app.listen(3000, function() {
     console.log("Server started on port 3000");
