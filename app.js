@@ -12,7 +12,25 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static("public"));
 
-//TODO
+mongoose.connect("mongodb://localhost:27017/wikiDB")
+
+const articlesSchema = new mongoose.Schema({
+    title: String,
+    content: String
+})
+
+const Article = mongoose.model("Article", articlesSchema);
+
+const article1 = new Article({
+    title:"Deepak",
+    content:"Hi Nigga"
+})
+
+app.get("/articles", function(req, res){
+    Article.find(function(err, foundArticles){
+        res.send(foundArticles);
+    });
+});
 
 app.listen(3000, function() {
     console.log("Server started on port 3000");
