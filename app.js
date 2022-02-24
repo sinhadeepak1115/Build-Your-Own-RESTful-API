@@ -26,6 +26,7 @@ const article1 = new Article({
     content:"Hi Nigga"
 })
 
+/************************************************************Request Targetting all Articlcs *********************************************************************/
 app.route('/articles')    
     .get(function(req, res){
         Article.find(function(err, foundArticles){
@@ -61,6 +62,34 @@ app.route('/articles')
             }
         })
     });
+/************************************************************Request Targetting Specific Articlcs ****************************************************************/
+
+app.route('/articles/:articlesTitle')
+
+    .get(function(req, res){
+        Article.findOne({title: req.params.articlesTitle}, function(err, foundArticles){
+            if (foundArticles){
+                res.send(foundArticles);
+                console.log("askdfjad;kajsdf")
+            }else{
+                res.send("No aritcles matching the title was found in the database.");
+                console.log(err);
+            }
+        })
+    })
+
+    .put(function(req, res){
+        Article.replaceOne(
+            {title: req.params.articlesTitle},
+            {title: req.body.title, content: req.body.content},
+            {overwrite: true},
+            function(err){
+                if (!err){
+                    res.send("Sucessfully updated the article.")
+                }
+            }
+        )
+    })
 
 app.listen(3000, function() {
     console.log("Server started on port 3000");
